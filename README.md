@@ -1,153 +1,89 @@
-# copywright
+# contentwright
 
-**A Claude Skill for writing copy that sells and reads like a person wrote it.**
+A Claude Skill for writing organic, platform-native content that does not read like AI wrote it.
 
-Built by [Jeeva Nadar](https://github.com/) · MIT licensed · Works in Claude.ai, the Claude apps, and Claude Code
+One post or fifty. A single LinkedIn draft, a week of posts, ten full YouTube scripts, a month of ideas mapped to pillars. The output scale follows what you asked for, the voice follows a stored profile, and every file goes through a mechanical slop check before it is handed back.
 
-Most AI copy fails in one of two directions. It goes loud, generic and adjective-stuffed, the way a landing page did in 2013. Or it goes smooth, balanced, hedged and structurally identical paragraph after paragraph, which is worse, because it feels competent right up until nobody replies.
+## What it does
 
-copywright runs a direct-response spine over a literary finish. Hormozi, Halbert, Schwartz, Ogilvy and Bencivenga decide what the copy says. Rhythm, antithesis and monosyllabic landings decide how it lands. A hard anti-slop pass runs on every deliverable before it reaches you.
+1. **Scales to the ask.** "A post about pricing" gives you one post with three hooks. "10 video ideas with scripts" gives you ten full scripts, each with its own cold open, beat map, titles, thumbnail text and description.
+2. **Keeps your voice.** A reusable voice profile built from your own samples, so you stop re-explaining how you write. Personal and company profiles stay separate.
+3. **Asks before it writes.** Five to ten batched questions with defaults, gated on audience, the one idea, and the desired action. Say "just write it" to skip straight to a draft with assumptions listed.
+4. **Kills the tells.** No em dashes. No "delve", no "it's not X, it's Y", no rhetorical question openers, no summary close. Spoken second-person English, uneven sentence rhythm, concrete over abstract.
+5. **Checks its own work.** `slop_check.py` hard-fails on banned punctuation, banned vocabulary and banned sentence shapes, then reports rhythm, contraction rate and second-person density.
+6. **Repurposes without copy-paste.** One idea rewritten for each channel rather than trimmed down from the longest version.
 
-The standard it holds itself to: a good human copywriter reading the output should not be able to tell a model wrote it, and should be able to point at the mechanism that makes it work.
-
----
-
-## What it writes
-
-1. **Outbound.** Cold emails, follow-up sequences, LinkedIn DMs, pitch notes.
-2. **Long-form sales.** Sales letters, landing pages, VSL scripts, offer construction.
-3. **Content.** Blog posts, newsletters, LinkedIn and X posts, case studies.
-4. **Short and sharp.** Subject lines, taglines, ad sets, headlines, CTAs.
-5. **Awkward.** Apology letters, price rise notices, outage posts, layoff announcements, cover letters.
-6. **Editing.** Existing copy that is too long, too vague, too corporate, or too obviously machine-made.
-
-## What it will not do
-
-1. Invent a statistic, a testimonial, a client name or a result. If a number is needed and missing, it writes `[NEEDS: metric]` and tells you.
-2. Guarantee outcomes inside compliance-bound copy.
-3. Imitate a named writer's tics. It takes the mechanics, because copying the mannerisms produces parody.
-4. Pad to look thorough. If the right answer is 40 words, you get 40 words.
-
----
+Covers LinkedIn, YouTube long form, Shorts and Reels, X posts and threads, and newsletters.
 
 ## Install
 
-**Claude.ai and the Claude apps:** download `copywright.skill`, open it in a chat, click Save skill.
+**Claude.ai and the Claude apps:** download `contentwright.skill`, open it in the chat, and click Save skill.
 
-**Claude Code:**
+**Claude Code:** clone into your skills directory.
 
 ```bash
-git clone https://github.com/<your-username>/copywright.git ~/.claude/skills/copywright
+git clone https://github.com/<your-username>/contentwright.git ~/.claude/skills/contentwright
 ```
 
-**Anything else that reads SKILL.md:** point it at the folder. It is plain markdown, no dependencies, nothing to build.
+**Anything else that reads SKILL.md:** point it at the folder. The skill is plain markdown plus two stdlib-friendly Python scripts.
 
----
+## Use
 
-## Use it
-
-Just ask. It triggers on the natural phrasing, not a command syntax:
+Just ask. The skill triggers on requests like:
 
 ```
-write me a cold email to CFOs at mid-size manufacturers
-landing page for a bookkeeping service, cold traffic
-10 subject lines for a re-engagement send
-punch this up, it reads like AI
-draft the price increase email, we are going up 12%
-rewrite my about page so it sounds like me
+write me a LinkedIn post about why we killed our best feature
+give me a week of content, LinkedIn and X
+10 video ideas with full scripts for a channel about Indian tax filing
+turn this blog post into a thread and a Short
+make this post sound like me, not like ChatGPT
 ```
 
-First it classifies the job: format, temperature (cold, warm, hot), the one action, and the shortest length that still does the job. Then it asks five to ten questions in a single batch, each with a default, so you can reply "defaults" and move. Say **"just write it"** and it drafts immediately, listing the three assumptions it made at the top so you correct the premise instead of the prose.
+First run, it asks for a voice profile. Give it five to ten of your own posts. That single step does more for output quality than every other setting combined.
 
----
+## Scripts
 
-## How it works
+```bash
+# hard-fail slop check, exits 1 on failure
+python scripts/slop_check.py batch.md
+python scripts/slop_check.py batch.md --extra-banned my_banned_words.txt
+python scripts/slop_check.py batch.md --json
 
-1. **Classify.** Format, temperature, job to be done, length ceiling. Loads only the reference files that job needs.
-2. **Intake.** Five to ten batched questions with defaults. Never serial, never asking what the brief already answered.
-3. **Reader Contract.** One specific reader, the belief they hold now, the belief they need, one action, one reason to believe, and the cost of doing nothing in their terms. Fuzzy here means fuzzy copy, so it gets fixed here.
-4. **Doctrine.** Twelve laws that settle most drafting decisions. Specificity over adjectives. Demonstrations over claims. One person, one idea, one ask.
-5. **Pipeline.** Mine the real material, pick the angle in plain language, choose the lead type against awareness level, draft hot at 130% of target, impose structure, cut 25 to 35%, fix cadence out loud, place proof beside the claim it supports, audit.
-6. **Specificity engine.** Eight mechanical drills that upgrade weak lines. "Most clients" becomes "9 of the last 11". "Quickly" becomes "before your next payroll run". "Improved compliance posture" becomes "an auditor asks for the log and you send it in four minutes".
-7. **Cadence pass.** Sentence lengths varied hard. Endings landing on short hard words. One turn where the argument pivots. One single-line paragraph, used once.
-8. **Anti-slop enforcement.** No stock openers, no LLM vocabulary, no "not just X, it's Y", no colon-reveal titles, no tricolon addiction, no uniform paragraph blocks, no hedge stacking, no summary paragraph before the CTA, no em dash tic, no invented proof.
-9. **Texture injection.** One oddly specific detail that could only come from real experience. One admitted cost or trade-off. One line in the reader's own vocabulary. One deliberate rhythm break. One line carrying an actual opinion.
-10. **Self-audit.** Ten scores out of ten. Anything at 7 or below gets fixed before delivery, not shipped with a caveat.
+# turn a batch file into an xlsx content calendar
+python scripts/calendar_export.py batch.md calendar.xlsx
+```
 
----
-
-## What comes back
-
-1. The copy, clean and ready to paste. No commentary inside it, no placeholder brackets except where a real fact is genuinely missing.
-2. Two or three alternate hooks or subject lines underneath, labelled by angle (curiosity, proof, cost-of-inaction), so there is something to test.
-3. Three specific refinement levers at the end. Harder CTA, longer proof section, different awareness level. Not a generic offer to help.
-
-Anything over roughly 400 words, or anything you will publish or edit elsewhere, arrives as a `.md` file. Short copy stays inline where you can read it at a glance.
-
----
-
-## What it looks like in practice
-
-Before, the version most tools produce:
-
-> Our innovative platform leverages cutting-edge automation to streamline your month-end close, empowering finance teams to unlock new levels of efficiency and focus on what truly matters.
-
-After:
-
-> Your close takes nine days. Six of them are one person matching invoices to a bank statement, by hand, on a Sunday.
->
-> We read every invoice twice before a human sees it. Last month that pulled the close to two days for 9 of our last 11 clients.
->
-> Send me one month of statements. I will run them and send back the exceptions by Friday. If the list is not shorter than yours, you owe nothing.
-
-Same product. One of them names a mechanism, puts proof next to the claim, and makes the ask a physical action with a date on it.
-
----
+`slop_check.py` is stdlib only. `calendar_export.py` needs `openpyxl`.
 
 ## Layout
 
 ```
-copywright/
-├── SKILL.md                    classification, intake, doctrine, pipeline, audit
-└── references/
-    ├── frameworks.md           awareness and sophistication levels, lead types,
-    │                           hook mechanics, value equation, proof stacks, CTAs
-    ├── formats.md              per-format playbooks with structure, target lengths
-    │                           and worked examples
-    ├── voices.md               the influence bench: Hormozi, Halbert, Schwartz,
-    │                           Ogilvy, Sugarman, Bencivenga, Caples, plus the
-    │                           literary side
-    └── anti-slop.md            full banned list, structural tells, humanizing
-                                drills, rewrite exercises
+contentwright/
+├── SKILL.md                        pipeline, scale detection, delivery format
+├── references/
+│   ├── voice-profile.md            intake questions and the profile template
+│   ├── anti-slop.md                banned words, banned shapes, rewrite examples
+│   ├── platform-formats.md         structures and length targets per platform
+│   └── hook-bank.md                openings that work, openings that do not
+├── scripts/
+│   ├── slop_check.py               mechanical slop detector
+│   └── calendar_export.py          batch markdown to xlsx calendar
+└── examples/
+    └── sample-output.md            what a finished batch looks like
 ```
 
-Progressive disclosure. SKILL.md stays lean and the references load only when the job in front of it needs them, so a three-line subject line request does not drag in the sales-letter playbook.
+Progressive disclosure: SKILL.md stays lean and the references load only when the relevant step runs.
 
----
+## Not in scope
 
-## Pairs with
-
-1. **contentwright** for organic feed content: YouTube scripts, LinkedIn posts, X threads, newsletters, weekly batches and calendars.
-2. **instagram-carousel** for carousels with a locked visual style.
-
-copywright owns anything sold directly. Feed content and carousels belong to the other two, and keeping the boundary clean is what stops all three from turning into the same generic writer.
-
----
+Instagram carousels and direct-response sales assets are handled by separate skills. Cold email, ads, landing pages and sales letters are a different job with different rules, and mixing them into a feed-content skill makes both worse.
 
 ## Tuning it
 
-1. Add brand vocabulary and banned claims to your intake answers once, and it carries them for the rest of the conversation.
-2. Feed it two or three samples of your real writing when you want your own voice. It matches habits, not topics.
-3. Edit `references/anti-slop.md` to add words you personally hate. The list is meant to grow.
-
----
-
-## Credits
-
-Written and maintained by **Jeeva Nadar**.
-
-The doctrine leans on the people who worked this out long before any of it was automated: Gary Halbert, Eugene Schwartz, David Ogilvy, Gary Bencivenga, Joseph Sugarman, John Caples and Alex Hormozi, with the cadence layer borrowed from Shakespeare, Hemingway, Didion and Vonnegut.
+1. Add your own banned words to a text file and pass it with `--extra-banned`.
+2. Edit `references/anti-slop.md` to change what counts as a hard failure in judgement terms, and `scripts/slop_check.py` to change what the checker enforces mechanically.
+3. Adjust length targets in `references/platform-formats.md` if your audience reads longer.
 
 ## License
 
-MIT. Copyright (c) 2026 Jeeva Nadar. Use it, fork it, sell what you write with it.
+MIT. Use it, fork it, sell what you make with it.
